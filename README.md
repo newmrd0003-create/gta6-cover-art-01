@@ -6,13 +6,15 @@
 
 Vice City Sunset — a GTA 6-style cover art maker: turn a photo and a caption into a multi-panel poster cover, export PNG in 1080x1080, 1080x1350 or 1920x1080, fully offline.
 
+Four poster layouts (Hero + 3, Four grid, Full bleed, Tilted stack), four colour grades (Sunset, Neon nights, Gold hour, Noir), per-panel crop and position by drag + zoom, and a bold gradient title with a neon script subtitle. Photos never leave the machine. Original design — no Rockstar Games logo, artwork, character or font is used.
+
 ## Run it
 
 ```sh
 node serve.ts
 ```
 
-Then open http://localhost:8080 — load a photo, arrange the panels, edit the caption, pick a size, export PNG.
+Then open http://localhost:8080 — load a photo (or try a sample), arrange the panels, edit the caption, pick a size, export PNG.
 
 ---
 
