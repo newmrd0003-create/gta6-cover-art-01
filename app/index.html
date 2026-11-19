@@ -3,96 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Neon Coast Cover Studio — GTA 6-style cover maker</title>
-<meta name="description" content="Turn any photo and caption into GTA 6-style multi-panel cover art with a Vice City neon-sunset grade. Offline, free, exports PNG in 1080x1080, 1080x1350 and 1920x1080.">
+<title>Vice Cover Studio — GTA 6-style cover maker</title>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<header class="topbar">
-  <div class="brand">
-    <span class="brand-mark">VC</span>
-    <div>
-      <h1>Neon Coast Cover Studio</h1>
-      <p>Your photo + caption &rarr; GTA-style cover art, offline in your browser.</p>
-    </div>
-  </div>
-  <div class="top-actions">
-    <button id="undo" type="button" title="Undo (Ctrl+Z)">&#8617; Undo</button>
-    <button id="redo" type="button" title="Redo (Ctrl+Y)">&#8618; Redo</button>
-    <button id="exportAll" type="button" class="primary">Export all 3 sizes</button>
-  </div>
-</header>
-
 <main class="app">
-  <section class="stage">
-    <canvas id="cover" width="1080" height="1080" aria-label="Live cover preview"></canvas>
-    <p class="hint">Click a panel to pick its photo &middot; drag on the cover to crop &middot; scroll to zoom.</p>
-    <div id="slots" class="slots" aria-label="Photo slots"></div>
+  <section class="controls" aria-label="Cover controls">
+    <h1>VICE COVER STUDIO</h1>
+    <p class="tag">Your photo + a caption = a Vice City sunset cover. Photos never leave this machine.</p>
+
+    <h2>1 · Photos — one per panel</h2>
+    <div id="panels"></div>
+    <button id="fillAll" type="button" class="wide">Fill all panels with the active photo</button>
+
+    <h2>2 · Position the active panel</h2>
+    <label class="slider">Zoom <input id="zoom" type="range" min="1" max="2.5" step="0.01" value="1"> <span id="zoomVal">100%</span></label>
+    <p class="hint">Drag the photo on the preview to move it. Click a panel to make it active.</p>
+    <button id="resetPos" type="button">Reset position</button>
+
+    <h2>3 · Caption</h2>
+    <label>Title <input id="title" type="text" maxlength="32" value="VICE CITY NIGHTS"></label>
+    <label>Tagline <input id="tagline" type="text" maxlength="48" value="one last sunset heist"></label>
+
+    <h2>4 · Look</h2>
+    <div id="layoutOpts" class="opts" aria-label="Layout"></div>
+    <div id="sizeOpts" class="opts" aria-label="Export size"></div>
+    <div id="themeOpts" class="opts" aria-label="Colour theme"></div>
+    <label class="slider">Sunset grade <input id="grade" type="range" min="0" max="1" step="0.05" value="0.55"> <span id="gradeVal">55%</span></label>
+    <label class="check"><input id="grain" type="checkbox" checked> Film grain</label>
+
+    <button id="exportBtn" type="button" class="export">Export PNG</button>
+    <p id="status" role="status"></p>
+    <p class="fine">Original art only — no Rockstar logo, artwork or font. Fonts: Anton + Pacifico (SIL OFL, in app/fonts).</p>
   </section>
-
-  <aside class="controls">
-    <section class="panel">
-      <h2>1 &middot; Photos</h2>
-      <label class="file-label">Add a photo to the selected slot
-        <input id="photo" type="file" accept="image/*">
-      </label>
-      <button id="sample" type="button">Load sample photos</button>
-      <div class="row">
-        <label>Zoom <output id="zoomVal">100%</output>
-          <input id="zoom" type="range" min="1" max="3" step="0.05" value="1">
-        </label>
-        <button id="resetCrop" type="button">Reset crop</button>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>2 &middot; Layout</h2>
-      <div id="layouts" class="picks"></div>
-    </section>
-
-    <section class="panel">
-      <h2>3 &middot; Sunset grade</h2>
-      <div id="grades" class="picks"></div>
-    </section>
-
-    <section class="panel">
-      <h2>4 &middot; Lettering</h2>
-      <label>Title
-        <input id="title" type="text" maxlength="30" value="VICE CITY">
-      </label>
-      <label>Neon subtitle
-        <input id="subtitle" type="text" maxlength="40" value="vice city nights">
-      </label>
-      <label>Badge
-        <input id="badge" type="text" maxlength="30" value="VICE CITY • 2026">
-      </label>
-      <label>Heat <output id="heatVal">4 / 5</output>
-        <input id="heat" type="range" min="0" max="5" step="1" value="4">
-      </label>
-    </section>
-
-    <section class="panel">
-      <h2>5 &middot; Finish</h2>
-      <label class="check"><input id="grain" type="checkbox" checked> Film grain</label>
-      <label class="check"><input id="vignette" type="checkbox" checked> Vignette</label>
-      <label>Frame
-        <select id="frame">
-          <option value="white">White poster</option>
-          <option value="black">Black poster</option>
-        </select>
-      </label>
-      <h3>Export PNG</h3>
-      <div id="sizes" class="picks"></div>
-      <p class="fine">Photos never leave your machine. No upload, no account, no watermark.</p>
-    </section>
-  </aside>
+  <section class="preview" aria-label="Live preview">
+    <canvas id="cover" width="1080" height="1080" aria-label="The cover preview"></canvas>
+  </section>
 </main>
-
-<footer class="foot">
-  <p id="status" role="status">Load a photo, pick a layout, export your cover.</p>
-  <p class="fine">Original art and lettering. Not affiliated with Rockstar Games. Fonts: Anton &amp; Pacifico (SIL Open Font License).</p>
-</footer>
-
-<script type="module" src="./src/main.js"></script>
+<script type="module">
+  const q = new URLSearchParams(location.search);
+  if (q.get('shot')) {
+    const { runShot } = await import('./src/shots.js');
+    await runShot();
+  } else {
+    const { boot } = await import('./src/main.js');
+    await boot();
+  }
+</script>
 </body>
 </html>

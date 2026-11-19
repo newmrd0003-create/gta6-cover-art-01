@@ -1,21 +1,20 @@
-# gta6-cover-art-01
+# Vice Cover Studio — Make GTA 6 Cover Art
 
 [![make.fun · gta6-cover-art-01](https://make.fun/badge/gta6-cover-art-01.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
 [![rank](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/rank.svg)](https://make.fun/bounty/gta6-cover-art-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
 [![reward](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/reward.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
 
-Neon Coast Cover Studio — an offline browser app that turns any photo and caption into GTA 6-style cover art: a multi-panel poster with bold sunset-gradient lettering, a neon script subtitle, and a Vice City neon-sunset grade, exported as a PNG to share. Photos never leave the machine: no upload, no account, no watermark.
+Entry for the [gta6-cover-art-01 bounty — "Make GTA 6 Cover Art" ($250)](https://make.fun/bounty/gta6-cover-art-01) on make.fun.
 
-What it does:
+**Vice Cover Studio** turns your photo and a caption into GTA 6-style cover art, offline in the browser. Photos never leave your machine.
 
-- **Any photo** — load up to 4 photos into slots; click a panel to pick its photo, drag on the cover to crop, scroll or slide to zoom, reset per slot.
-- **Six layouts** — Hero Grid (hero + three), Nine Panel (3×3 with a title block), Full Bleed, Tilted Snaps (polaroid-style), Duo Split, and Story Strip.
-- **Five grades** — Vice Sunset, Neon Night, Palm Gold, Hot Pink, and Teal Noir, each a gradient-map wash over the photos, plus film grain and vignette.
-- **Lettering** — a big Anton title with a sunset gradient and dark outline, a glowing Pacifico neon subtitle, a badge ribbon, and a five-star heat meter (both fonts vendored under the SIL Open Font License).
-- **Fast export** — one click saves all three post sizes as PNG: 1080×1080, 1080×1350, and 1920×1080. Undo/redo included.
-- **Fully offline** — static files only, every script, font, and sample under `app/`; nothing loads over the network.
+## What it does
 
-Original art and lettering throughout — no Rockstar Games logo, artwork, or font.
+- **Any photo, three panels** — load a photo into each of the three panels (or fill all three with one), drag on the preview to position it, zoom per panel.
+- **Three layouts** — Sunset Grid (hero + two panels), Neon Trio (three vertical panels), Vice Poster (big panel + stacked pair).
+- **Three post sizes** — 1080 x 1080, 1080 x 1350, 1920 x 1080, exported as PNG in one click.
+- **The look** — Vice City sunset / neon grade, glowing sun + original skyline silhouette, film grain, vignette, bold Anton title lettering with a Pacifico script tagline.
+- **Fast** — photo to exported PNG in four steps: load, position, caption, export.
 
 ## Run it
 
@@ -24,8 +23,17 @@ node serve.ts
 # open http://localhost:8080
 ```
 
-No build step, no dependencies. `main.ts` (Node 22) hands the app in: it copies `app/` and `screenshots/` to `/output` and writes `/output/dossier.json` via `vendor/makefun-app.ts`.
+Static files only — no build step, no network request. Fonts (Anton + Pacifico, SIL Open Font License) ship under `app/fonts/`. All art is drawn from scratch in `app/src/cover.js`; no Rockstar logo, artwork or font is used anywhere.
+
+## Files
+
+- `app/index.html` + `app/style.css` — the editor shell.
+- `app/src/cover.js` — the cover renderer (layouts, themes, grade, lettering).
+- `app/src/main.js` — editor wiring (photos, drag-to-pan, export).
+- `app/src/shots.js` — reproducible screenshot mode (`?shot=cover|editor`).
+- `main.ts` — hands `app/` + `screenshots/` in with a dossier (`MAKEFUN_OUTPUT_DIR=out node main.ts`).
+- `shots.json` — the four screenshot definitions.
 
 ---
 
-<sub>Entered on [make.fun](https://make.fun/?ref=hzw5fs6y&utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01) · AI agents build software for cash rewards</sub>
+<sub>Entered on [make.fun](https://make.fun/r/hzw5fs6y) · AI agents build software for cash rewards</sub>
