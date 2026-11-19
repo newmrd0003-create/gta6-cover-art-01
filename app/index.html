@@ -1,23 +1,110 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cover Snap</title>
-<link rel="stylesheet" href="./style.css">
+<title>Vice City Sunset — GTA 6-style Cover Maker</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main class="app">
-  <section class="controls">
-    <h1>Cover Snap</h1>
-    <p>A photo and a caption, made into a square cover.</p>
-    <label>Photo <input id="photo" type="file" accept="image/*"></label>
-    <label>Caption <input id="caption" type="text" maxlength="40" value="Sunset Heist"></label>
-    <button id="export" type="button">Export PNG 1080 x 1080</button>
-    <p id="status" role="status"></p>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">VC</span>
+    <div>
+      <h1>VICE CITY SUNSET</h1>
+      <p>GTA 6-style cover art maker &middot; 100% offline</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="exportBtn" class="btn primary" type="button">Export PNG</button>
+  </div>
+</header>
+
+<main id="editor" class="editor">
+  <section class="stage-col">
+    <div class="panel-tabs" role="tablist" aria-label="Choose panel to edit">
+      <button class="panel-tab active" type="button" data-panel="0">Hero panel</button>
+      <button class="panel-tab" type="button" data-panel="1">Panel 2</button>
+      <button class="panel-tab" type="button" data-panel="2">Panel 3</button>
+    </div>
+    <div class="stage-wrap">
+      <canvas id="preview" width="1080" height="1080"></canvas>
+      <p class="drag-hint">Drag the photo to move it &middot; use the zoom slider to crop it</p>
+    </div>
+    <div class="photo-row">
+      <button id="uploadBtn" class="btn" type="button">Upload a photo</button>
+      <button id="useAllBtn" class="btn ghost" type="button">Use this photo in all panels</button>
+      <input id="fileInput" type="file" accept="image/*" hidden>
+    </div>
+    <div class="samples">
+      <span class="samples-label">Samples:</span>
+      <button class="sample-btn" type="button" data-sample="pier">Pier sunset</button>
+      <button class="sample-btn" type="button" data-sample="boulevard">Boulevard</button>
+    </div>
   </section>
-  <canvas id="cover" width="1080" height="1080" aria-label="The cover"></canvas>
+
+  <aside class="controls">
+    <section class="control-block">
+      <h2>Caption</h2>
+      <label class="field">
+        <span>Title</span>
+        <input id="titleInput" type="text" value="SUNSET HEIST" maxlength="28">
+      </label>
+      <label class="field">
+        <span>Subtitle</span>
+        <input id="subtitleInput" type="text" value="VICE CITY &middot; 2026" maxlength="48">
+      </label>
+      <label class="field">
+        <span>Title size <output id="titleSizeOut">100%</output></span>
+        <input id="titleSizeInput" type="range" min="60" max="140" value="100">
+      </label>
+      <div class="field">
+        <span>Title colour</span>
+        <div class="swatches" id="titleSwatches">
+          <button type="button" class="swatch active" data-color="#ffffff" style="--c:#ffffff" aria-label="White"></button>
+          <button type="button" class="swatch" data-color="#ffd166" style="--c:#ffd166" aria-label="Gold"></button>
+          <button type="button" class="swatch" data-color="#ff5ea8" style="--c:#ff5ea8" aria-label="Neon pink"></button>
+          <button type="button" class="swatch" data-color="#5ee6ff" style="--c:#5ee6ff" aria-label="Neon cyan"></button>
+          <button type="button" class="swatch" data-color="#ff6b35" style="--c:#ff6b35" aria-label="Sunset orange"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="control-block">
+      <h2>Photo &mdash; selected panel</h2>
+      <label class="field">
+        <span>Zoom <output id="zoomOut">100%</output></span>
+        <input id="zoomInput" type="range" min="100" max="260" value="100">
+      </label>
+      <div class="field">
+        <span>Colour grade</span>
+        <div class="grades" id="gradeBtns">
+          <button type="button" class="grade-btn active" data-grade="sunset">Vice sunset</button>
+          <button type="button" class="grade-btn" data-grade="neon">Neon night</button>
+          <button type="button" class="grade-btn" data-grade="golden">Golden hour</button>
+          <button type="button" class="grade-btn" data-grade="noir">Noir</button>
+          <button type="button" class="grade-btn" data-grade="none">Natural</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="control-block">
+      <h2>Export size</h2>
+      <div class="sizes" id="sizeBtns">
+        <button type="button" class="size-btn active" data-size="1080x1080">1080 &times; 1080<br><small>Square</small></button>
+        <button type="button" class="size-btn" data-size="1080x1350">1080 &times; 1350<br><small>Portrait</small></button>
+        <button type="button" class="size-btn" data-size="1920x1080">1920 &times; 1080<br><small>Landscape</small></button>
+      </div>
+      <button id="exportBtn2" class="btn primary wide" type="button">Export PNG</button>
+      <p class="note">Your photos never leave this machine. No Rockstar logo, artwork or font is used anywhere in this app.</p>
+    </section>
+  </aside>
 </main>
-<script type="module" src="./src/main.js"></script>
+
+<div id="shotStage" class="shot-stage" hidden>
+  <img id="shotImg" alt="Exported cover">
+</div>
+
+<script type="module" src="src/main.js"></script>
 </body>
 </html>
