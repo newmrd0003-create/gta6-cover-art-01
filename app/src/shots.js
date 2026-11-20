@@ -1,98 +1,70 @@
-// Vice Cover Studio — screenshot presets.
-// The app reads ?shot=… from the URL so its maker can take honest screenshots
-// of the real app: `cover` draws one exported cover full-window, `editor`
-// opens the editor with the bundled sample photos loaded. Nothing here edits
-// or composites an image; every shot is the app drawing itself.
+// shots.js — deterministic screenshot scenes for Vice Cover Studio.
+// Reads the page URL (?shot=cover | ?shot=editor, plus layout, size, grade,
+// title, subtitle, badge, stars and photo) and configures the editor state
+// so a headless browser can capture the exact scenes the entry hands in:
+// the exported cover full-frame, and the editor with a photo loaded.
+// No network: photos are the app's own local samples.
 
-import { drawCover } from './cover.js';
+import { LAYOUTS, GRADES, SIZES, SAMPLE_PHOTOS } from './cover.js';
 
-export const SHOT_PRESETS = {
-  coverWide: {
-    title: 'VICE CITY',
-    subtitle: 'Welcome back to',
-    tagline: 'Sunset over the boulevard • 2026',
-    layout: 'duo',
-    grade: 'sunset',
-    size: 'wide',
-  },
-  coverPortrait: {
-    title: 'NEON HEAT',
-    subtitle: 'One night in',
-    tagline: 'Vice City • After dark',
-    layout: 'duo',
-    grade: 'neon',
-    size: 'portrait',
-  },
-  coverSquare: {
-    title: 'VICE CITY',
-    subtitle: 'Golden hour on the',
-    tagline: 'Pier side • 1080 × 1080',
-    layout: 'quad',
-    grade: 'dusk',
-    size: 'square',
-  },
-};
-
-function loadImage(src) {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = reject;
-    image.src = src;
-  });
+function param(name, fallback) {
+  const v = new URLSearchParams(window.location.search).get(name);
+  return v === null || v === '' ? fallback : v;
 }
 
-async function loadSamplePhotos() {
-  const [boulevard, pier] = await Promise.all([
-    loadImage('samples/boulevard.jpg'),
-    loadImage('samples/pier.jpg'),
-  ]);
-  return [
-    { image: boulevard, zoom: 1.15, panX: 0, panY: 0.9, name: 'boulevard.jpg' },
-    { image: pier, zoom: 1.1, panX: 0, panY: 0.6, name: 'pier.jpg' },
-  ];
+function pickPhotoIds(photo, count, layout) {
+  const ids = SAMPLE_PHOTOS.map((p) => p.id);
+  if (photo === 'mix') {
+    // Tall hero panel crops a landscape photo hard: give it the pier scene,
+    // whose subject sits dead centre and survives a vertical crop.
+    const order = layout === 'hero' ? ['pier', 'neon', 'boulevard', 'rooftop'] : ids;
+    return Array.from({ length: count }, (_, i) => order[i % order.length]);
+  }
+  const one = ids.includes(photo) ? photo : 'boulevard';
+  return Array.from({ length: count }, () => one);
 }
 
-// Draw a preset cover onto the given canvas at its own size, then scale that
-// drawing to fill the window — the app's own drawing of the exported cover.
-export async function renderShotCover(canvas, presetName) {
-  const preset = SHOT_PRESETS[presetName] || SHOT_PRESETS.coverWide;
-  await document.fonts.load('64px Anton');
-  await document.fonts.load('32px Pacifico');
-  const photos = await loadSamplePhotos();
-  const offscreen = document.createElement('canvas');
-  const sizes = { wide: [1920, 1080], portrait: [1080, 1350], square: [1080, 1080] };
-  const [w, h] = sizes[preset.size];
-  offscreen.width = w;
-  offscreen.height = h;
-  drawCover(offscreen.getContext('2d'), { ...preset, photos, assignments: {} }, w, h);
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#0b0618';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  const scale = Math.max(canvas.width / w, canvas.height / h);
-  const dw = w * scale;
-  const dh = h * scale;
-  ctx.drawImage(offscreen, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
-  return preset;
-}
+// Configure `state` from the URL and load its photos. Returns true when a
+// shot scene was requested (the caller then skips its default demo state).
+// `hooks` are the editor's actions: assignPhoto(index, sampleId),
+// fillAll(sampleId), redraw() and refreshPickers().
+export function applyShotParams(state, hooks) {
+  const shot = param('shot', '');
+  if (shot !== 'cover' && shot !== 'editor') return false;
 
-// Build the editor state a screenshot of the editor needs: sample photos in,
-// trio layout, sunset grade, captions filled.
-export async function loadEditorShotState() {
-  await document.fonts.load('64px Anton');
-  await document.fonts.load('32px Pacifico');
-  const photos = await loadSamplePhotos();
-  return {
-    photos,
-    layout: 'trio',
-    grade: 'sunset',
-    size: 'wide',
-    title: 'VICE CITY',
-    subtitle: 'Welcome back to',
-    tagline: 'Sunset over the boulevard • 2026',
-    assignments: { 0: 0, 1: 1, 2: 0 },
-    selectedPanel: 0,
-  };
+  state.layout = LAYOUTS[param('layout', state.layout)] ? param('layout', state.layout) : state.layout;
+  state.size = SIZES[param('size', state.size)] ? param('size', state.size) : state.size;
+  state.grade = GRADES[param('grade', state.grade)] ? param('grade', state.grade) : state.grade;
+  state.title = param('title', state.title);
+  state.subtitle = param('subtitle', state.subtitle);
+  state.badge = param('badge', state.badge);
+  const stars = Number(param('stars', String(state.stars)));
+  state.stars = Number.isFinite(stars) ? Math.max(0, Math.min(5, stars)) : state.stars;
+
+  const count = LAYOUTS[state.layout].panels;
+  const photoIds = pickPhotoIds(param('photo', 'mix'), count, state.layout);
+
+  if (shot === 'cover') {
+    document.body.classList.add('shot-cover');
+    document.title = `Vice Cover Studio — ${state.title}`;
+  }
+
+  // Load the scene photos, then draw once and flag readiness for the
+  // headless screenshot runner.
+  (async () => {
+    for (let i = 0; i < count; i++) {
+      await hooks.assignPhoto(i, photoIds[i]);
+    }
+    hooks.refreshPickers();
+    hooks.redraw();
+    try {
+      await document.fonts.ready;
+    } catch (err) {
+      // already handled by the editor boot; a missing font never blocks
+      // the shot.
+    }
+    hooks.redraw();
+    window.__shotReady = true;
+  })();
+  return true;
 }
