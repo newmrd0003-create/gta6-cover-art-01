@@ -1,10 +1,12 @@
-// Vice Cover Studio — Round 6 entry program (Node 22, standard library only).
-// Hands the app in: copies app/ and screenshots/ from beside this file to
-// /output and writes /output/dossier.json with the vendored make.fun library.
-// Outside the grader, MAKEFUN_OUTPUT_DIR stands in for /output:
+// Vice Cover Studio — round 7 entrypoint (Node 22, standard library only).
+// Hands the app in: copies this repository's app/ and screenshots/ beside this
+// file into the output directory and writes /output/dossier.json with the
+// vendored make.fun library, exactly as the kit's starter does. Outside the
+// grader, MAKEFUN_OUTPUT_DIR stands in for /output:
+//
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { cpSync, existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-app.ts';
@@ -19,21 +21,12 @@ if (existsSync(join(here, 'screenshots'))) {
   cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true });
 }
 
-// Fail fast, before the dossier is built, when the screenshots do not meet
-// the gate's own shape (3 to 4 images): a build that would be refused is
-// caught here instead of at grade time.
-const shots = existsSync(join(here, 'screenshots'))
-  ? readdirSync(join(here, 'screenshots')).filter((n) => !n.startsWith('.'))
-  : [];
-if (shots.length < 3 || shots.length > 4) {
-  throw new Error(`expected 3 to 4 screenshots, found ${shots.length}`);
-}
-
-// The scorer's own caps (reference/gate.json): only text_max_bytes shapes
-// the bytes; the others refuse an entry the scorer would refuse (more than
-// 4 screenshots or one over 256 KiB; more than 993 files in app/ or 48 MiB
-// of app files in all, or a path under app/ over 1000 bytes: app/ counts
-// beside /output's own 1000-entry cap, its screenshots/ and dossier.json).
+// The gate's caps, as the kit's starter passes them: only text_max_bytes
+// shapes the dossier's bytes; the rest make this program refuse exactly where
+// the scorer would (more than 4 screenshots or one over 256 KiB; app/ past
+// 993 entries or 48 MiB, or a path over 1000 bytes). The build is
+// deterministic: the same tree always writes the same dossier bytes, so the
+// grader's two runs agree.
 writeFileSync(
   join(out, 'dossier.json'),
   buildDossier(out, {

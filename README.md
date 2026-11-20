@@ -1,75 +1,57 @@
-# Vice Cover Studio — Round 6
+# Vice Cover Studio — GTA 6-style cover art maker
 
-[![make.fun bounty](https://make.fun/badge/gta6-cover-art-01.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
-[![make.fun rank](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/rank.svg)](https://make.fun/bounty/gta6-cover-art-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
-[![make.fun reward](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/reward.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
+[![make.fun](https://make.fun/badge/gta6-cover-art-01.svg)](https://make.fun/c/gta6-cover-art-01)
+[![rank](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/rank.svg)](https://make.fun/c/gta6-cover-art-01)
+[![reward](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/reward.svg)](https://make.fun/c/gta6-cover-art-01)
 
-Entry for the [make.fun](https://make.fun) competition
-[**Make GTA 6 Cover Art**](https://make.fun/c/gta6-cover-art-01)
-(`gta6-cover-art-01`, $250 pot / 50 places, fee $0, entries close 21 Nov 2026 17:30 WIB).
+Turn your own photo and a caption into a Vice City poster-style cover, right in
+the browser — no upload, no account, no network. Built for the
+[Make GTA 6 Cover Art](https://make.fun/c/gta6-cover-art-01) competition on
+[make.fun](https://make.fun).
 
-## What it is
+## What it does
 
-**Vice Cover Studio** turns any photo and a caption into GTA-poster-style
-cover art, offline in a desktop browser. Pick a layout, drop in one photo or
-several, crop and position each panel, letter the caption, pick a sunset or
-neon grade — and export a PNG ready to post.
-
-- **4 layouts** — Hero Grid (1 big + 3 small), Nine Panel (3×3 comic grid with
-  a centre title block), Full Bleed, Tilted Snaps (rotated polaroids).
-- **Any photo** — upload your own, or use the four original sample scenes
-  (Boulevard, Neon Street, Pier Day, Rooftop Dusk). Click a panel to select
-  it, then zoom and pan it independently; one photo can fill every panel.
-- **Caption** — bold Anton title with a gradient + outline poster treatment,
-  Pacifico script subtitle, a ribbon badge and a 0–5 star heat meter.
-- **5 colour grades** — Vice Sunset, Neon Night, Vice Pink, Golden Hour, Noir.
-- **Fast** — photo to PNG in a few clicks, in the common post sizes
-  **1080 × 1080**, **1080 × 1350** and **1920 × 1080**.
-- **Offline & private** — static files under `app/`, no build step, no
-  network request, photos never leave the machine.
+- **Your photos, your panels.** Load one or several photos from your machine,
+  drop them into a multi-panel poster layout, and crop + position each panel
+  by dragging. One photo can fill every panel, or each panel can hold its own.
+- **Poster layouts.** Three layouts: *Sunset Strip* (one tall hero panel beside
+  two stacked panels), *Four Corners* (2×2 grid) and *Hero Banner* (wide hero
+  over a strip).
+- **Vice City grades.** Four colour grades — Sunset, Neon, Noir and Palm —
+  applied per cover, with a vignette and a grain pass for the printed-poster feel.
+- **Bold caption lettering.** A big display title in Bebas Neue plus a script
+  subtitle in Lobster, both editable, with outline, shadow and colour controls.
+- **Export PNG.** One tap exports 1080×1080, 1080×1350 or 1920×1080 PNG files
+  to share.
 
 ## Try it
 
 ```sh
-node serve.ts            # serves app/ at http://localhost:8080
-# or any static server:
-python3 -m http.server 8080 --directory app
+node serve.ts
 ```
 
-Open `app/index.html`, pick a layout and photos, edit the caption, hit
-**Export PNG**.
+Then open <http://localhost:8080> in desktop Chrome. Everything runs offline:
+every script, font and sample image is a file under `app/`, and your photos
+never leave your machine.
 
-## Screenshots
+## How it works
 
-`shots.json` lists the four handed-in scenes; `?shot=cover` renders the
-exported cover full-frame and `?shot=editor` shows the editor with a photo
-loaded. The screenshots in `screenshots/` are:
-
-1. `1-cover.jpg` — Hero Grid cover, square, "Sunset Heist"
-2. `2-editor.jpg` — the editor with a photo loaded
-3. `3-cover.jpg` — Nine Panel cover, portrait, "Boulevard Queen"
-4. `4-cover.jpg` — Tilted Snaps cover, wide, "Neon Nights"
-
-## Files
-
-| File | What it does |
-| --- | --- |
-| `app/index.html` | Editor page |
-| `app/style.css` | Dark neon editor UI |
-| `app/src/cover.js` | Cover renderer: layouts, grades, lettering, grain |
-| `app/src/main.js` | Editor wiring: pickers, panels, upload, export |
-| `app/src/shots.js` | Deterministic `?shot=` scenes for screenshots |
-| `app/fonts/` | Anton + Pacifico (SIL OFL, see `OFL.txt`) |
-| `app/samples/` | Four original illustration photos made for this entry |
-| `main.ts` | Hands `app/` + `screenshots/` to `/output` with a dossier |
+- `app/index.html` — the editor page.
+- `app/style.css` — the editor chrome (dark, neon-accented).
+- `app/src/cover.js` — the cover renderer: layouts, grades, lettering, export.
+- `app/src/main.js` — the editor wiring: photo loading, drag crop, controls.
+- `app/fonts/` — Bebas Neue and Lobster, both SIL Open Font License (see
+  `app/fonts/OFL.txt`).
+- `app/samples/` — four Vice City scenes generated for this app, free to use
+  as starter photos.
 
 ## Originality
 
-No Rockstar Games logo, wordmark, artwork, character or font. Lettering is
-Anton and Pacifico, shipped under the SIL Open Font License (`app/fonts/OFL.txt`).
-Sample photos are original flat illustrations drawn for this entry — no real
-person, no game art.
+No Rockstar Games logo, wordmark, artwork, character or font is used anywhere
+in this app. The lettering fonts are open-licensed, the sample scenes are
+original art made for this project, and every layout and grade is the author's
+own design.
 
 ## License
 
-MIT — see `LICENSE`.
+MIT — see [LICENSE](LICENSE).
