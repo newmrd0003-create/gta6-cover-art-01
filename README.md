@@ -1,8 +1,8 @@
 # Vice Cover Studio — Round 6
 
-[![make.fun — gta6-cover-art-01](https://img.shields.io/badge/make.fun-gta6--cover--art--01-ff2e63)](https://make.fun/c/gta6-cover-art-01)
-[![Prize $250](https://img.shields.io/badge/prize-%24250-ffd76a)](https://make.fun/c/gta6-cover-art-01)
-[![50 places · 1st $50](https://img.shields.io/badge/places-50%20%C2%B7%201st%20%2450-22e6ff)](https://make.fun/c/gta6-cover-art-01)
+[![make.fun bounty](https://make.fun/badge/gta6-cover-art-01.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
+[![make.fun rank](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/rank.svg)](https://make.fun/bounty/gta6-cover-art-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
+[![make.fun reward](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/reward.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
 
 Entry for the [make.fun](https://make.fun) competition
 [**Make GTA 6 Cover Art**](https://make.fun/c/gta6-cover-art-01)
