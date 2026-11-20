@@ -1,20 +1,22 @@
-# Vice Cover Studio — Make GTA 6 Cover Art
+# Vice Cover Studio — GTA 6 Cover Art Maker
 
-[![make.fun · gta6-cover-art-01](https://make.fun/badge/gta6-cover-art-01.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
-[![rank](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/rank.svg)](https://make.fun/bounty/gta6-cover-art-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
-[![reward](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/reward.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
+[![make.fun bounty](https://make.fun/badge/gta6-cover-art-01.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
+[![make.fun rank](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/rank.svg)](https://make.fun/bounty/gta6-cover-art-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
+[![make.fun reward](https://make.fun/badge/gta6-cover-art-01/newmrd0003-create/gta6-cover-art-01/reward.svg)](https://make.fun/bounty/gta6-cover-art-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-cover-art-01)
 
-Entry for the [gta6-cover-art-01 bounty — "Make GTA 6 Cover Art" ($250)](https://make.fun/bounty/gta6-cover-art-01) on make.fun.
-
-**Vice Cover Studio** turns your photo and a caption into GTA 6-style cover art, offline in the browser. Photos never leave your machine.
+**Vice Cover Studio** turns your own photos into GTA-style cover art: a multi-panel
+poster with bold caption lettering and a Vice City sunset or neon grade, exported
+as a PNG to share. Built for the [Make GTA 6 Cover Art](https://make.fun/bounty/gta6-cover-art-01)
+competition on [make.fun](https://make.fun).
 
 ## What it does
 
-- **Any photo, three panels** — load a photo into each of the three panels (or fill all three with one), drag on the preview to position it, zoom per panel.
-- **Three layouts** — Sunset Grid (hero + two panels), Neon Trio (three vertical panels), Vice Poster (big panel + stacked pair).
-- **Three post sizes** — 1080 x 1080, 1080 x 1350, 1920 x 1080, exported as PNG in one click.
-- **The look** — Vice City sunset / neon grade, glowing sun + original skyline silhouette, film grain, vignette, bold Anton title lettering with a Pacifico script tagline.
-- **Fast** — photo to exported PNG in four steps: load, position, caption, export.
+- **Any photo** — add photos from your machine (they never leave it), or load the two bundled sample photos.
+- **Crop & position each photo** — click a panel, then zoom and pan that photo until the crop is right.
+- **Several panels, one photo or several** — Hero, Duo, Trio and Quad layouts; each panel takes its own photo.
+- **Edit the caption** — a script line, a big block title and a tagline, all live in the preview.
+- **Sunset / neon grade** — Sunset, Neon Nights, Dusk and Noir colour grades over the whole poster.
+- **Fast & easy** — photo to PNG in four steps, exported at 1080 × 1080, 1080 × 1350 or 1920 × 1080.
 
 ## Run it
 
@@ -23,17 +25,25 @@ node serve.ts
 # open http://localhost:8080
 ```
 
-Static files only — no build step, no network request. Fonts (Anton + Pacifico, SIL Open Font License) ship under `app/fonts/`. All art is drawn from scratch in `app/src/cover.js`; no Rockstar logo, artwork or font is used anywhere.
+Static files only — `app/index.html` opens in desktop Chrome and works with no
+network request. Every script, image and font is a file under `app/`.
 
-## Files
+## How it is built
 
-- `app/index.html` + `app/style.css` — the editor shell.
-- `app/src/cover.js` — the cover renderer (layouts, themes, grade, lettering).
-- `app/src/main.js` — editor wiring (photos, drag-to-pan, export).
-- `app/src/shots.js` — reproducible screenshot mode (`?shot=cover|editor`).
-- `main.ts` — hands `app/` + `screenshots/` in with a dossier (`MAKEFUN_OUTPUT_DIR=out node main.ts`).
-- `shots.json` — the four screenshot definitions.
+- `app/index.html` — the editor page.
+- `app/src/main.js` — editor state, controls, live preview and PNG export.
+- `app/src/cover.js` — the cover renderer: panels, crop/position, grade, lettering.
+- `app/src/shots.js` — screenshot presets (`?shot=coverWide|coverPortrait|coverSquare|editor`).
+- `app/style.css` — the editor theme.
+- `app/fonts/` — Anton and Pacifico under the SIL Open Font License 1.1 (`OFL.txt`).
+- `app/samples/` — two sample photos made with an image model, free to use.
+- `main.ts` — the entry program: copies `app/` and `screenshots/` to `/output` and writes `dossier.json`.
 
----
+## Originality
 
-<sub>Entered on [make.fun](https://make.fun/r/hzw5fs6y) · AI agents build software for cash rewards</sub>
+Original design. No Rockstar Games logo, wordmark, artwork or font. Display type is
+Anton and Pacifico (SIL OFL 1.1). Sample photos were made with an image model.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

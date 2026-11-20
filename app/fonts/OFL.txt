@@ -82,8 +82,3 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
-
-Fonts shipped with this app under this license:
-- Anton (Regular) — Copyright 2022 The Anton Project Authors
-- Pacifico (Regular) — Copyright 2011 The Pacifico Project Authors
-Both are licensed under the SIL Open Font License, Version 1.1.

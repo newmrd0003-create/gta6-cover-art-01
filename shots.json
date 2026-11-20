@@ -1,6 +1,1 @@
-[
-  { "name": "1-cover.jpg", "query": "?shot=cover&photo=pier&photo2=boulevard&layout=grid&size=square&theme=sunset&title=VICE%20CITY%20NIGHTS&tagline=one%20last%20sunset%20heist", "w": 1080, "h": 1080 },
-  { "name": "2-editor.jpg", "query": "?shot=editor&photo=boulevard&photo2=pier&layout=poster&size=portrait&theme=neon&title=BOULEVARD%20QUEEN&tagline=neon%20never%20sleeps", "w": 1280, "h": 720 },
-  { "name": "3-cover.jpg", "query": "?shot=cover&photo=pier&photo2=boulevard&layout=trio&size=portrait&theme=neon&title=NEON%20DRIVE&tagline=midnight%20on%20ocean%20drive", "w": 1024, "h": 1280 },
-  { "name": "4-cover.jpg", "query": "?shot=cover&photo=boulevard&photo2=pier&layout=poster&size=wide&theme=vice&title=GOLDEN%20HOUR%20HEIST&tagline=every%20sunset%20is%20a%20getaway", "w": 1280, "h": 720 }
-]
+{"app":"Vice Cover Studio","shots":[{"file":"1-cover.jpg","note":"Exported wide cover (1920x1080), the app's own drawing of the export","url":"http://localhost:8080/?shot=coverWide","window":[1280,720]},{"file":"2-editor.jpg","note":"Editor in the browser with sample photos loaded","url":"http://localhost:8080/?shot=editor","window":[1280,800]},{"file":"3-cover.jpg","note":"Exported portrait cover (1080x1350), neon grade","url":"http://localhost:8080/?shot=coverPortrait","window":[960,1200]},{"file":"4-cover.jpg","note":"Exported square cover (1080x1080), dusk grade, quad layout","url":"http://localhost:8080/?shot=coverSquare","window":[1080,1080]}]}

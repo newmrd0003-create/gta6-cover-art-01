@@ -1,59 +1,98 @@
-// Vice Cover Studio — screenshot mode.
-// Driven by the URL query only, so the dossier screenshots are reproducible:
-//   ?shot=cover&photo=pier&layout=grid&size=square&theme=sunset
-//     &title=VICE%20CITY%20NIGHTS&tagline=one%20last%20sunset%20heist
-//   ?shot=editor&photo=boulevard&layout=poster&size=portrait
-// cover: hides the editor chrome, the canvas fills the window.
-// editor: the normal editor, with sample photos already loaded.
+// Vice Cover Studio — screenshot presets.
+// The app reads ?shot=… from the URL so its maker can take honest screenshots
+// of the real app: `cover` draws one exported cover full-window, `editor`
+// opens the editor with the bundled sample photos loaded. Nothing here edits
+// or composites an image; every shot is the app drawing itself.
 
-import { drawCover, ensureCoverFonts } from './cover.js';
-import { boot, getState, getCanvas, refresh } from './main.js';
+import { drawCover } from './cover.js';
 
-const params = new URLSearchParams(location.search);
+export const SHOT_PRESETS = {
+  coverWide: {
+    title: 'VICE CITY',
+    subtitle: 'Welcome back to',
+    tagline: 'Sunset over the boulevard • 2026',
+    layout: 'duo',
+    grade: 'sunset',
+    size: 'wide',
+  },
+  coverPortrait: {
+    title: 'NEON HEAT',
+    subtitle: 'One night in',
+    tagline: 'Vice City • After dark',
+    layout: 'duo',
+    grade: 'neon',
+    size: 'portrait',
+  },
+  coverSquare: {
+    title: 'VICE CITY',
+    subtitle: 'Golden hour on the',
+    tagline: 'Pier side • 1080 × 1080',
+    layout: 'quad',
+    grade: 'dusk',
+    size: 'square',
+  },
+};
 
-function sampleImage(name) {
+function loadImage(src) {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`sample ${name} failed to load`));
-    img.src = `./samples/${name}.jpg`;
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = src;
   });
 }
 
-export async function runShot() {
-  const mode = params.get('shot') || 'cover';
-  const state = getState();
-  if (params.get('layout')) state.layout = params.get('layout');
-  if (params.get('size')) state.size = params.get('size');
-  if (params.get('theme')) state.theme = params.get('theme');
-  if (params.get('title')) state.title = params.get('title');
-  if (params.get('tagline') !== null) state.tagline = params.get('tagline');
-  if (params.get('grade')) state.grade = Number(params.get('grade'));
+async function loadSamplePhotos() {
+  const [boulevard, pier] = await Promise.all([
+    loadImage('samples/boulevard.jpg'),
+    loadImage('samples/pier.jpg'),
+  ]);
+  return [
+    { image: boulevard, zoom: 1.15, panX: 0, panY: 0.9, name: 'boulevard.jpg' },
+    { image: pier, zoom: 1.1, panX: 0, panY: 0.6, name: 'pier.jpg' },
+  ];
+}
 
-  await boot();
+// Draw a preset cover onto the given canvas at its own size, then scale that
+// drawing to fill the window — the app's own drawing of the exported cover.
+export async function renderShotCover(canvas, presetName) {
+  const preset = SHOT_PRESETS[presetName] || SHOT_PRESETS.coverWide;
+  await document.fonts.load('64px Anton');
+  await document.fonts.load('32px Pacifico');
+  const photos = await loadSamplePhotos();
+  const offscreen = document.createElement('canvas');
+  const sizes = { wide: [1920, 1080], portrait: [1080, 1350], square: [1080, 1080] };
+  const [w, h] = sizes[preset.size];
+  offscreen.width = w;
+  offscreen.height = h;
+  drawCover(offscreen.getContext('2d'), { ...preset, photos, assignments: {} }, w, h);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0b0618';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const scale = Math.max(canvas.width / w, canvas.height / h);
+  const dw = w * scale;
+  const dh = h * scale;
+  ctx.drawImage(offscreen, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+  return preset;
+}
 
-  const photo = params.get('photo');
-  if (photo) {
-    const img = await sampleImage(photo);
-    state.photos[0] = { img, zoom: 1.05, ox: 0, oy: -0.03 };
-    const second = params.get('photo2') || photo;
-    const img2 = second === photo ? img : await sampleImage(second);
-    state.photos[1] = { img: img2, zoom: 1.1, ox: 0, oy: 0 };
-    state.photos[2] = { img, zoom: 1.15, ox: 0.05, oy: 0 };
-  }
-
-  await ensureCoverFonts();
-  document.getElementById('title').value = state.title;
-  document.getElementById('tagline').value = state.tagline;
-  refresh();
-  drawCover(getCanvas(), state);
-
-  if (mode === 'cover') {
-    document.body.classList.add('shot-cover');
-    document.getElementById('status').textContent = 'Exported cover — Vice Cover Studio';
-  } else {
-    document.getElementById('status').textContent = 'Photo loaded — drag it to position, then export.';
-  }
-  window.__shotReady = true;
-  return state;
+// Build the editor state a screenshot of the editor needs: sample photos in,
+// trio layout, sunset grade, captions filled.
+export async function loadEditorShotState() {
+  await document.fonts.load('64px Anton');
+  await document.fonts.load('32px Pacifico');
+  const photos = await loadSamplePhotos();
+  return {
+    photos,
+    layout: 'trio',
+    grade: 'sunset',
+    size: 'wide',
+    title: 'VICE CITY',
+    subtitle: 'Welcome back to',
+    tagline: 'Sunset over the boulevard • 2026',
+    assignments: { 0: 0, 1: 1, 2: 0 },
+    selectedPanel: 0,
+  };
 }
